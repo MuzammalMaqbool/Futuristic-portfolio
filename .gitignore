@@ -39,3 +39,13 @@ yarn-error.log*
 *.backup
 *-backup.html
 index-static-backup.html
+
+# Unused TypeScript/React files
+lib/
+src/
+tsconfig.json
+tailwind.config.js
+
+# Duplicate/unused assets
+Assets/css/
+Assets/js/
