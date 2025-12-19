@@ -153,10 +153,25 @@ function initMobileMenu() {
   
   if (!menuToggle || !nav) return;
   
-  menuToggle.addEventListener('click', () => {
+  // Toggle menu function
+  function toggleMenu() {
     menuToggle.classList.toggle('active');
     nav.classList.toggle('active');
     document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
+  }
+  
+  // Click event
+  menuToggle.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleMenu();
+  });
+  
+  // Touch event for better mobile support
+  menuToggle.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleMenu();
   });
   
   // Close menu on link click
@@ -173,6 +188,15 @@ function initMobileMenu() {
     if (nav.classList.contains('active') && 
         !nav.contains(e.target) && 
         !menuToggle.contains(e.target)) {
+      menuToggle.classList.remove('active');
+      nav.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+  
+  // Close menu on escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && nav.classList.contains('active')) {
       menuToggle.classList.remove('active');
       nav.classList.remove('active');
       document.body.style.overflow = '';

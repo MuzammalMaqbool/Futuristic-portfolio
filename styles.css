@@ -773,6 +773,13 @@ nav a.active {
   cursor: pointer;
   border: 1px solid var(--glass-border);
   background: transparent;
+  position: relative;
+  z-index: 102;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
 }
 
 .menu-toggle span {
@@ -790,10 +797,21 @@ nav a.active {
 
 .menu-toggle.active span:nth-child(2) {
   opacity: 0;
+  transform: scale(0);
 }
 
 .menu-toggle.active span:nth-child(3) {
   transform: rotate(-45deg) translate(5px, -6px);
+}
+
+@media (max-width: 480px) {
+  .menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(4px, 5px);
+  }
+
+  .menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(4px, -5px);
+  }
 }
 
 /* ==================== HERO SECTION ==================== */
@@ -2700,6 +2718,7 @@ section {
     top: var(--header-height);
     left: 0;
     right: 0;
+    width: 100%;
     flex-direction: column;
     background: rgba(3, 0, 20, 0.98);
     backdrop-filter: blur(20px);
@@ -2708,11 +2727,12 @@ section {
     transform: translateY(-150%);
     opacity: 0;
     visibility: hidden;
-    transition: all var(--transition-normal);
+    transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
     border-bottom: 1px solid var(--glass-border);
-    z-index: 99;
+    z-index: 100;
     max-height: calc(100vh - var(--header-height));
     overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   }
   
   nav.active {
@@ -2735,8 +2755,30 @@ section {
   }
   
   .menu-toggle {
-    display: flex;
-    z-index: 101;
+    display: flex !important;
+    z-index: 102 !important;
+    position: relative;
+    background: rgba(0, 240, 255, 0.05);
+    border-color: var(--accent);
+    pointer-events: auto !important;
+    touch-action: manipulation;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .menu-toggle:hover,
+  .menu-toggle:focus {
+    background: rgba(0, 240, 255, 0.15);
+    border-color: var(--accent);
+    box-shadow: 0 0 15px var(--accent-glow);
+    outline: none;
+  }
+  
+  .menu-toggle:active {
+    transform: scale(0.95);
+    background: rgba(0, 240, 255, 0.2);
   }
   
   .nav-container .btn.secondary,
@@ -2746,6 +2788,27 @@ section {
   
   .nav-container {
     justify-content: space-between;
+    position: relative;
+    align-items: center;
+    overflow: visible;
+  }
+  
+  .site-header {
+    z-index: 101;
+    overflow: visible;
+  }
+  
+  .brand {
+    z-index: 1;
+  }
+  
+  .menu-toggle {
+    order: 2;
+    margin-left: auto;
+  }
+  
+  nav {
+    order: 3;
   }
 }
 
@@ -3103,7 +3166,13 @@ section {
   }
   
   .menu-toggle {
-    padding: 8px;
+    padding: 8px !important;
+    display: flex !important;
+    z-index: 102;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
   }
   
   .menu-toggle span {
@@ -3342,6 +3411,18 @@ section {
     padding: 0 0.5rem;
     width: 100%;
     max-width: 100%;
+  }
+  
+  .menu-toggle {
+    padding: 6px !important;
+    display: flex !important;
+    min-width: 40px;
+    min-height: 40px;
+  }
+  
+  .menu-toggle span {
+    width: 18px;
+    height: 2px;
   }
   
   .nav-container {
