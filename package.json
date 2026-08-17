@@ -1,0 +1,25 @@
+{
+  "name": "azam-malik-portfolio",
+  "version": "1.0.0",
+  "description": "Azam Malik - Futuristic Portfolio Website",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve . -l ${PORT:-3000}",
+    "dev": "serve . -l 8000",
+    "build": "echo 'Static site build complete'"
+  },
+  "keywords": [
+    "portfolio",
+    "azam-malik",
+    "futuristic",
+    "website"
+  ],
+  "author": "Azam Malik",
+  "license": "ISC",
+  "dependencies": {
+    "serve": "^14.2.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
