@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initActiveNavLink();
   initFormValidation();
   init3DCarousel();
+  initYouTubeFetcher();
   setCurrentYear();
 });
 
@@ -415,7 +416,7 @@ function initActiveNavLink() {
   });
 }
 
-/* ==================== FORM VALIDATION ==================== */
+/* ==================== FORM VALIDATION & SUBMISSION ==================== */
 function initFormValidation() {
   const forms = document.querySelectorAll('.contact-form');
   
@@ -458,20 +459,55 @@ function initFormValidation() {
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<span class="loading-spinner"></span> Sending...';
       
-      // Simulate form submission (replace with actual submission logic)
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Success state
-      submitBtn.innerHTML = '✓ Message Sent!';
-      submitBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-      
-      // Reset form
-      setTimeout(() => {
+      const formData = new FormData(form);
+      const dataObj = {};
+      formData.forEach((value, key) => { dataObj[key] = value; });
+      dataObj["_subject"] = `New Contact Form Submission from ${dataObj.name || 'Portfolio'}`;
+      dataObj["_captcha"] = "false";
+
+      try {
+        const actionUrl = form.getAttribute('action') || 'https://formsubmit.co/ajax/azammalik65@gmail.com';
+        const ajaxUrl = actionUrl.includes('/ajax/') ? actionUrl : actionUrl.replace('formsubmit.co/', 'formsubmit.co/ajax/');
+
+        const response = await fetch(ajaxUrl, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(dataObj)
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success !== "false") {
+          submitBtn.innerHTML = '✓ Message Sent!';
+          submitBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+          form.reset();
+        } else {
+          throw new Error(result.message || 'Submission failed');
+        }
+      } catch (err) {
+        console.warn('FormSubmit AJAX fallback:', err);
+        const name = dataObj.name || '';
+        const email = dataObj.email || '';
+        const org = dataObj.organization ? `\nOrganization: ${dataObj.organization}` : '';
+        const msg = dataObj.message || '';
+        const subject = encodeURIComponent(`Contact Form Submission from ${name}`);
+        const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}${org}\n\nMessage:\n${msg}`);
+        
+        window.location.href = `mailto:azammalik65@gmail.com?subject=${subject}&body=${body}`;
+        
+        submitBtn.innerHTML = '✓ Email App Opened';
+        submitBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
         form.reset();
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalText;
-        submitBtn.style.background = '';
-      }, 3000);
+      } finally {
+        setTimeout(() => {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+          submitBtn.style.background = '';
+        }, 4000);
+      }
     });
     
     // Remove error state on input
@@ -651,4 +687,221 @@ function isInViewport(element) {
 // Lerp (Linear Interpolation)
 function lerp(start, end, factor) {
   return start + (end - start) * factor;
+}
+
+/* ==================== YOUTUBE AUTOMATIC VIDEO FETCHER ==================== */
+function initYouTubeFetcher() {
+  const container = document.getElementById('youtube-videos-grid');
+  if (!container) return;
+
+  // Initial loading indicator
+  container.innerHTML = `
+    <div class="card reveal" style="padding: 2.5rem; text-align: center; grid-column: 1 / -1; background: var(--surface);">
+      <p style="color: var(--text-muted); font-size: 1.1rem;">Loading latest YouTube uploads from @azammalik65...</p>
+    </div>
+  `;
+
+  function renderVideoCards(videos) {
+    if (!videos || !videos.length) {
+      renderFallbackEmbeds();
+      return;
+    }
+
+    container.innerHTML = videos.map((video, index) => {
+      const videoId = video.videoId || '';
+      const title = video.title || 'Azam Malik Talk';
+      // Original YouTube Thumbnail from YouTube CDN
+      const thumb = video.thumbnail || (videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : '');
+      const date = video.published ? new Date(video.published).toLocaleDateString() : (video.category || 'Official Upload');
+
+      return `
+        <article class="yt-video-card reveal stagger-${(index % 3) + 1}" data-video-id="${videoId}">
+          <div class="yt-thumb-wrapper">
+            <img src="${thumb}" alt="${title}" loading="lazy" onerror="this.src='https://img.youtube.com/vi/${videoId}/hqdefault.jpg'" />
+            <div class="yt-play-overlay">
+              <div class="yt-play-btn-circle">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="yt-video-info">
+            <h4>${title}</h4>
+            <div class="yt-video-meta">
+              <span>${date}</span>
+              <span style="color: #ef4444; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2c-.3-1.1-1.2-2-2.3-2.3C19.4 3.5 12 3.5 12 3.5s-7.4 0-9.2.4C1.7 4.2.8 5.1.5 6.2.1 8 .1 12 .1 12s0 4 .4 5.8c.3 1.1 1.2 2 2.3 2.3 1.8.4 9.2.4 9.2.4s7.4 0 9.2-.4c1.1-.3 2-1.2 2.3-2.3.4-1.8.4-5.8.4-5.8s0-4-.4-5.8zM9.6 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
+                Preview Video
+              </span>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    // Attach click events to open instant video player modal
+    container.querySelectorAll('.yt-video-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const vId = card.getAttribute('data-video-id');
+        if (vId) {
+          openYouTubeModal(vId);
+        } else {
+          window.open('https://www.youtube.com/@azammalik65', '_blank');
+        }
+      });
+    });
+
+    initScrollReveal();
+  }
+
+  function renderFallbackEmbeds() {
+    // Featured top videos directly scraped from @AzamMalik65 YouTube channel with original YouTube CDN thumbnails & click-to-preview player
+    const defaultVideos = [
+      {
+        videoId: "xv0GP-r4-e8",
+        title: "Podcast with Prominent TV Host Dr Abeera Babur",
+        category: "Podcast & Talk",
+        published: "Official Channel",
+        thumbnail: "https://i.ytimg.com/vi/xv0GP-r4-e8/hqdefault.jpg"
+      },
+      {
+        videoId: "UZQaYZKkpSQ",
+        title: "Podcast with Renowned Journalist & Political Analyst Khalid Farooqi",
+        category: "Interview",
+        published: "Official Channel",
+        thumbnail: "https://i.ytimg.com/vi/UZQaYZKkpSQ/hqdefault.jpg"
+      },
+      {
+        videoId: "vQZxFQfYH4U",
+        title: "A Candid Talk with Zeeshan Javaid CEO Fixelcloud at his office",
+        category: "Industry Discussion",
+        published: "Official Channel",
+        thumbnail: "https://i.ytimg.com/vi/vQZxFQfYH4U/hqdefault.jpg"
+      },
+      {
+        videoId: "5e8lMnHPwIA",
+        title: "Qasim Ali Shah & Gabe Gabrielle talking about 5 research methods of Living long",
+        category: "Keynote & Research",
+        published: "Official Channel",
+        thumbnail: "https://i.ytimg.com/vi/5e8lMnHPwIA/hqdefault.jpg"
+      },
+      {
+        videoId: "CPnTnc-njqQ",
+        title: "An Interview with Zahid Durrani General Secretary Roshni Association Hosted by Azam Malik",
+        category: "Civic & Community",
+        published: "Official Channel",
+        thumbnail: "https://i.ytimg.com/vi/CPnTnc-njqQ/hqdefault.jpg"
+      },
+      {
+        videoId: "EMW9OAwTAn8",
+        title: "A Brief Interview with Amjad Mehmood Siddiqi Project Manager Muslim Hands Educational Complex",
+        category: "Development Talk",
+        published: "Official Channel",
+        thumbnail: "https://i.ytimg.com/vi/EMW9OAwTAn8/hqdefault.jpg"
+      },
+      {
+        videoId: "Y0qckl8H-mI",
+        title: "Meet A Norwegian Pakistani Tayyab Chaudri Head of IHSG Norway",
+        category: "Global Network",
+        published: "Official Channel",
+        thumbnail: "https://i.ytimg.com/vi/Y0qckl8H-mI/hqdefault.jpg"
+      },
+      {
+        videoId: "vPOo4fN7vMs",
+        title: "An Brief Interview with the author of Book “Tameer - Bunyad se Takmeel Tak”",
+        category: "Book & Literature",
+        published: "Official Channel",
+        thumbnail: "https://i.ytimg.com/vi/vPOo4fN7vMs/hqdefault.jpg"
+      },
+      {
+        videoId: "3c_Vn6G7-kE",
+        title: "A Visit of Rehabilitation Centre of Roshni Association Bedian Road Lahore",
+        category: "Community Impact",
+        published: "Official Channel",
+        thumbnail: "https://i.ytimg.com/vi/3c_Vn6G7-kE/hqdefault.jpg"
+      },
+      {
+        videoId: "Erg-_tNa7s8",
+        title: "Interview & Keynote Talk by Azam Malik",
+        category: "Keynote & Talk",
+        published: "Official Channel",
+        thumbnail: "https://i.ytimg.com/vi/Erg-_tNa7s8/hqdefault.jpg"
+      }
+    ];
+
+    renderVideoCards(defaultVideos);
+  }
+
+  // Auto-fetch latest videos dynamically whenever a new video is uploaded to @AzamMalik65
+  const targetRssFeed = 'https://www.youtube.com/feeds/videos.xml?user=azammalik65';
+  const rssJsonUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(targetRssFeed)}`;
+
+  fetch(rssJsonUrl)
+    .then(res => res.json())
+    .then(data => {
+      if (data && data.status === 'ok' && data.items && data.items.length > 0) {
+        const fetchedVideos = data.items.map(item => {
+          const match = item.link ? item.link.match(/v=([^&]+)/) : null;
+          const videoId = match ? match[1] : (item.guid ? item.guid.split(':').pop() : '');
+          return {
+            videoId: videoId,
+            title: item.title,
+            published: item.pubDate,
+            thumbnail: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
+          };
+        }).filter(v => v.videoId);
+
+        if (fetchedVideos.length > 0) {
+          renderVideoCards(fetchedVideos);
+          return;
+        }
+      }
+      renderFallbackEmbeds();
+    })
+    .catch(err => {
+      console.warn('YouTube Live Auto-Sync Notice:', err);
+      renderFallbackEmbeds();
+    });
+}
+
+// Modal helper for YouTube playback
+function openYouTubeModal(videoId) {
+  let modal = document.querySelector('.yt-modal-overlay');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.className = 'yt-modal-overlay';
+    modal.innerHTML = `
+      <div class="yt-modal-container">
+        <button class="yt-modal-close" aria-label="Close modal">&times;</button>
+        <div class="yt-modal-iframe-wrapper">
+          <iframe id="yt-modal-iframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    modal.querySelector('.yt-modal-close').addEventListener('click', closeYouTubeModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeYouTubeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('active')) closeYouTubeModal();
+    });
+  }
+
+  const iframe = modal.querySelector('#yt-modal-iframe');
+  iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`;
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeYouTubeModal() {
+  const modal = document.querySelector('.yt-modal-overlay');
+  if (modal) {
+    modal.classList.remove('active');
+    const iframe = modal.querySelector('#yt-modal-iframe');
+    if (iframe) iframe.src = '';
+    document.body.style.overflow = '';
+  }
 }
