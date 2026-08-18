@@ -2245,11 +2245,10 @@ section {
 
 .carousel-wrapper {
   position: relative;
-  width: 100%;
-  max-width: 900px;
+  max-width: 1200px;
   margin: 3rem auto 0;
   perspective: 1200px;
-  overflow: hidden;
+  overflow: visible;
   padding: 0 1rem;
   box-sizing: border-box;
 }
@@ -2334,7 +2333,7 @@ section {
   transform: translateY(-50%);
   width: 50px;
   height: 50px;
-  background: rgba(0, 240, 255, 0.1);
+  background: rgba(10, 10, 15, 0.7);
   border: 2px solid var(--accent);
   color: var(--accent);
   border-radius: 50%;
@@ -2342,10 +2341,9 @@ section {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10;
+  z-index: 20;
   transition: all var(--transition-normal);
   backdrop-filter: blur(10px);
-  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
 }
 
 .carousel-btn:hover {
@@ -2360,20 +2358,20 @@ section {
 }
 
 .carousel-prev {
-  left: 10px;
+  left: 15px;
 }
 
 .carousel-next {
-  right: 10px;
+  right: 15px;
 }
 
 @media (min-width: 1025px) {
   .carousel-prev {
-    left: -80px;
+    left: 20px;
   }
 
   .carousel-next {
-    right: -80px;
+    right: 20px;
   }
 }
 
@@ -3672,4 +3670,26 @@ section {
 
 .yt-modal-close:hover {
   background: #ff0000;
+}
+
+.video-slide-title {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(0deg, rgba(10, 10, 15, 0.95) 0%, rgba(10, 10, 15, 0.6) 70%, transparent 100%);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  border-bottom-left-radius: var(--radius-xl);
+  border-bottom-right-radius: var(--radius-xl);
+  pointer-events: none;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  transition: color 0.3s ease;
+}
+
+.carousel-slide.active:hover .video-slide-title {
+  color: var(--cyan);
 }
