@@ -733,6 +733,13 @@ function initYouTubeFetcher() {
     // Featured top videos directly scraped from @AzamMalik65 YouTube channel with original YouTube CDN thumbnails & click-to-preview player
     const defaultVideos = [
       {
+        videoId: "zQAE9DmeQjI",
+        title: "Can Pakistan Compete with India's $150 Billion IT Industry?",
+        category: "Tech & Economy",
+        published: "Future Fest by Ejad Labs",
+        thumbnail: "https://i.ytimg.com/vi/zQAE9DmeQjI/hqdefault.jpg"
+      },
+      {
         videoId: "xv0GP-r4-e8",
         title: "Podcast with Prominent TV Host Dr Abeera Babur",
         category: "Podcast & Talk",
