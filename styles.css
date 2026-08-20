@@ -1037,7 +1037,7 @@ nav a.active {
 /* Flip Card */
 .flip-card {
   perspective: 1200px;
-  min-height: 400px;
+  min-height: 460px;
   flex: 1;
 }
 
@@ -1068,7 +1068,7 @@ nav a.active {
   justify-content: center;
   text-align: center;
   gap: 0.75rem;
-  min-height: 400px;
+  min-height: 460px;
   clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
 }
 
@@ -1103,10 +1103,11 @@ nav a.active {
 /* Profile Frame */
 .profile-frame {
   position: relative;
-  width: 140px;
-  height: 140px;
+  width: 200px;
+  height: 200px;
   overflow: hidden;
-  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+  clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 22px 100%, 0 calc(100% - 22px));
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
 .profile-frame::before {
@@ -1125,8 +1126,8 @@ nav a.active {
   position: absolute;
   top: 0;
   right: 0;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   background: var(--accent);
   clip-path: polygon(0 0, 100% 100%, 100% 0);
   z-index: 3;
@@ -1141,7 +1142,13 @@ nav a.active {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: saturate(1.1) contrast(1.05);
+  object-position: center 15%;
+  filter: saturate(1.05) contrast(1.03);
+  transition: transform 0.4s var(--ease-smooth);
+}
+
+.profile-frame:hover img {
+  transform: scale(1.06);
 }
 
 @keyframes spin {
@@ -2953,8 +2960,8 @@ section {
   }
   
   .profile-frame {
-    width: 120px;
-    height: 120px;
+    width: 160px;
+    height: 160px;
   }
   
   .tech-card {
