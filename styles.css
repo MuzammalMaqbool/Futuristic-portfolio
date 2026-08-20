@@ -3729,12 +3729,18 @@ section {
 }
 
 .urdu-title {
-  font-family: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', 'Urdu Typesetting', serif;
-  direction: rtl;
-  text-align: right;
-  line-height: 1.8;
+  font-family: 'Jameel Noori Nastaleeq', 'Jameel Noori Nastaleeq Regular', 'Noto Nastaliq Urdu', 'Nafees Web Naskh', 'Urdu Typesetting', serif !important;
+  font-weight: normal !important;
+  direction: rtl !important;
+  text-align: right !important;
+  line-height: 1.9 !important;
+  letter-spacing: 0.02em !important;
   font-size: 1.25rem;
   margin-bottom: 0.75rem;
   color: var(--accent);
+  font-feature-settings: "liga" 1, "kern" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
 
