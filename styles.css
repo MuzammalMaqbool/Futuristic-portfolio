@@ -3693,3 +3693,48 @@ section {
 .carousel-slide.active:hover .video-slide-title {
   color: var(--cyan);
 }
+
+/* Facebook Video Badge & Custom Card Styles */
+.fb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  background: rgba(24, 119, 242, 0.15);
+  border: 1px solid rgba(24, 119, 242, 0.4);
+  color: #1877f2;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
+.fb-play-btn-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1877f2, #0b5ed7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 0 20px rgba(24, 119, 242, 0.6);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.yt-video-card:hover .fb-play-btn-circle,
+.media-card:hover .fb-play-btn-circle {
+  transform: scale(1.15);
+  box-shadow: 0 0 30px rgba(24, 119, 242, 0.9);
+}
+
+.urdu-title {
+  font-family: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', 'Urdu Typesetting', serif;
+  direction: rtl;
+  text-align: right;
+  line-height: 1.8;
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+  color: var(--accent);
+}
+

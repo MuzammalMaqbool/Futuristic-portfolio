@@ -886,3 +886,46 @@ function closeYouTubeModal() {
     document.body.style.overflow = '';
   }
 }
+
+// Modal helper for Facebook video playback
+function openFacebookModal(fbUrl) {
+  let modal = document.querySelector('.fb-modal-overlay');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.className = 'yt-modal-overlay fb-modal-overlay';
+    modal.innerHTML = `
+      <div class="yt-modal-container">
+        <button class="yt-modal-close" aria-label="Close modal">&times;</button>
+        <div class="yt-modal-iframe-wrapper">
+          <iframe id="fb-modal-iframe" src="" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    modal.querySelector('.yt-modal-close').addEventListener('click', closeFacebookModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeFacebookModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('active')) closeFacebookModal();
+    });
+  }
+
+  const iframe = modal.querySelector('#fb-modal-iframe');
+  const targetUrl = fbUrl || 'https://fb.watch/j6B6Ik8_VP/';
+  iframe.src = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(targetUrl)}&show_text=false&autoplay=true`;
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeFacebookModal() {
+  const modal = document.querySelector('.fb-modal-overlay');
+  if (modal) {
+    modal.classList.remove('active');
+    const iframe = modal.querySelector('#fb-modal-iframe');
+    if (iframe) iframe.src = '';
+    document.body.style.overflow = '';
+  }
+}
+
