@@ -887,7 +887,7 @@ function closeYouTubeModal() {
   }
 }
 
-// Modal helper for Facebook video playback
+// Modal helper for Facebook video playback inside website
 function openFacebookModal(fbUrl) {
   let modal = document.querySelector('.fb-modal-overlay');
   if (!modal) {
@@ -897,7 +897,7 @@ function openFacebookModal(fbUrl) {
       <div class="yt-modal-container">
         <button class="yt-modal-close" aria-label="Close modal">&times;</button>
         <div class="yt-modal-iframe-wrapper">
-          <iframe id="fb-modal-iframe" src="" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen></iframe>
+          <iframe id="fb-modal-iframe" src="" frameborder="0" scrolling="no" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen="true"></iframe>
         </div>
       </div>
     `;
@@ -913,7 +913,12 @@ function openFacebookModal(fbUrl) {
   }
 
   const iframe = modal.querySelector('#fb-modal-iframe');
-  const targetUrl = fbUrl || 'https://fb.watch/j6B6Ik8_VP/';
+  // Canonical Facebook video URL for embedded playback without external redirect
+  let targetUrl = fbUrl || 'https://www.facebook.com/urdupoint.network/videos/1260982727824215/';
+  if (targetUrl.includes('fb.watch')) {
+    targetUrl = 'https://www.facebook.com/urdupoint.network/videos/1260982727824215/';
+  }
+  
   iframe.src = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(targetUrl)}&show_text=false&autoplay=true`;
   modal.classList.add('active');
   document.body.style.overflow = 'hidden';
@@ -928,4 +933,5 @@ function closeFacebookModal() {
     document.body.style.overflow = '';
   }
 }
+
 
